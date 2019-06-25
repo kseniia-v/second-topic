@@ -4,7 +4,7 @@ function Unit(name, power){
   //private
   this._name = name;
   this._health = this.MAXHEALTH;
-  this._level = 1;
+  this._level = 5;
   this._xp = 0;
   this._power = power;
 }

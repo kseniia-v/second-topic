@@ -1,70 +1,66 @@
-const Unit = {
-  MAXHEALTH: 100,
-
-  name: 'unicorn',
-
-
-sayName: getName
-
-};
-
-//Unit.MAXHEALTH = 100
-/*
-Unit.prototype.health = Unit.MAXHEALTH
-Unit.prototype.level = 1
-Unit.prototype.xp = 0
-*/
-//unit
-function getName() {
-  return this.name;
-}
-function getLevel() {
-  return this.level;
-}
-function isAlive() {
-  return this.health > 0;
-}
-function addHealth(a) {
-  return this.health = this.health + a < this.MAXHEALTH ? this.health + a : this.MAXHEALTH;
-}
-function takeDamage(a) {
-  earnExperience.call(this,500);
-  this.health = this.health - a;
-  if(!isAlive){die.call(this);};
-  //console.log(this);
-}
-function earnExperience(a) {
-  this.xp += this.level > 1 ? (a - a / this.level * 0.1) : a;
-  levelUp.call(this);
+function Unit(name, power){
+  this.MAXHEALTH = 100;
+  this._name = name;
+  this._power = power ? power : this._power;
+  this._health = this.MAXHEALTH
 }
 
-function levelUp() {
-  this.level = (this.xp % 1000 === 0) ? this.level + 1 : this.level;
-  console.log(this.level);
+Unit.prototype._level = 1
+Unit.prototype._xp = 0
+Unit.prototype._power = 15
+
+Unit.prototype.getName = function() {
+  return this._name;
 }
 
-//doctor || soldier
-function action(units,shots){
-  var stdPower = this.power * units * (shots ? shots : 1)
-  var result = this.level > 1 ? (stdPower + stdPower * this.level * 0.1) : stdPower;
-  earnExperience.call(this,250);
-  return result; //healed / damaged
+Unit.prototype.getLevel = function() {
+  return this._level;
 }
-/*
-function die(){ return {};}
 
-var doctor = new Unit('Doctor');
-var soldier = new Unit('Soldier');
+Unit.prototype.isAlive = function() {
+  return this._health > 0;
+}
 
+Unit.prototype.addHealth = function(a) {
+  return this._health = this._health + a < this.MAXHEALTH ? this._health + a : this.MAXHEALTH;
+}
 
-doctor.power = 10;
-soldier.power = 15;
+Unit.prototype.takeDamage = function(a) {
+  this._health = this._health - a * (this._resistance ? this._resistance : 1);
+  this._earnExperience(500);
+}
 
-var heavy = {};
-heavy.__proto__ = soldier;
-heavy.name = 'Heavy';
-heavy.resistance = 0.2;
-*/
-//takeDamage.call(doctor,200);
-var uu = Unit.sayName();
-console.log(uu);
+Unit.prototype._earnExperience = function(a) {
+  this._xp += this._level > 1 ? (a - a * this._level * 0.1) : a;
+  this._levelUp();
+}
+
+Unit.prototype._levelUp = function() {
+  if (this._xp % 1000 === 0){
+    this._level += this._level + 1;
+    console.log(this._name + ' has improved his level up to ' + this._level);
+  }
+}
+
+Unit.prototype.action = function(units, shots){
+  var stdPower = this._power * units * (shots ? shots : 1)
+  var result = this._level > 1 ? (stdPower + stdPower * this._level * 0.01) : stdPower;
+  this._earnExperience(250);
+  return result;
+}
+
+Unit.prototype.affect = function(whom, units, shots){
+  var effect = this.action(units, shots);
+  if(this._name === 'Doctor'){
+    this.addHealth.call(whom,effect)
+  }else{
+    this.takeDamage.call(whom,effect);
+  }
+  if(this.isAlive.call(whom)){
+    console.log(this.getName.call(whom) + ' is still ready to fight!');
+  }else{
+    console.log('Battle is over for ' + this.getName.call(whom));
+  }
+}
+
+Heavy.prototype._resistance = 0.2;
