@@ -1,60 +1,54 @@
-const _maxHealth = 100;
-
-function Unit (name){
-  this.name = name;
-  this.health = _maxHealth;
-  this.level = 1;
-  this.xp = 0;
+function Unit(name, power){
+  //public
+  this.MAXHEALTH = 100;
+  //private
+  this._name = name;
+  this._health = this.MAXHEALTH;
+  this._level = 1;
+  this._xp = 0;
+  this._power = power;
 }
+
 //unit
 function getName() {
-  return this.name;
+  return this._name;
 }
+
 function getLevel() {
-  return this.level;
+  return this._level;
 }
+
 function isAlive() {
-  return this.health > 0;
+  return this._health > 0;
 }
+
 function addHealth(a) {
-  return this.health = this.health + a < _maxHealth ? this.health + a : _maxHealth;
+  return this._health = this._health + a < this.MAXHEALTH ? this._health + a : this.MAXHEALTH;
 }
+
 function takeDamage(a) {
-  earnExperience.call(this,500);
-  this.health = this.health - a;
-  if(!isAlive){die.call(this);};
-  //console.log(this);
-}
-function earnExperience(a) {
-  this.xp += this.level > 1 ? (a - a / this.level * 0.1) : a;
-  levelUp.call(this);
+  _earnExperience.call(this, 500);
+  this._health = this._health - a;
 }
 
-function levelUp() {
-  this.level = (this.xp % 1000 === 0) ? this.level + 1 : this.level;
-  console.log(this.level);
+function _earnExperience(a) {
+  this._xp += this._level > 1 ? (a - a * this._level * 0.1) : a;
+  _levelUp.call(this);
 }
 
-//doctor || soldier
-function action(units,shots){
-  var stdPower = this.power * units * (shots ? shots : 1)
-  var result = this.level > 1 ? (stdPower + stdPower * this.level * 0.1) : stdPower;
-  earnExperience.call(this,250);
+function _levelUp() {
+  this._level = (this._xp % 1000 === 0) ? this._level + 1 : this._level;
+  console.log(this._level);
+}
+
+function action(units, shots){
+  var stdPower = this._power * units * (shots ? shots : 1)
+  var result = this._level > 1 ? (stdPower + stdPower * this._level * 0.01) : stdPower;
+  _earnExperience.call(this, 250);
   return result; //healed / damaged
 }
 
-function die(){ return {};}
-
-var doctor = new Unit('Doctor');
-var soldier = new Unit('Soldier');
-
-doctor.power = 10;
-soldier.power = 15;
-
-var heavy = {};
-heavy.__proto__ = soldier;
-heavy.name = 'Heavy';
-heavy.resistance = 0.2;
-
-takeDamage.call(doctor,200);
-console.log(doctor);
+var Doctor = new Unit('Doctor', 10);
+var Soldier = new Unit('Soldier', 15);
+var Heavy = {name: 'Heavy', resistance: 0.2};
+Heavy.__proto__ = Soldier;
