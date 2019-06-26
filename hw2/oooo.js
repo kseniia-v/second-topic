@@ -63,4 +63,21 @@ Unit.prototype.affect = function(whom, units, shots){
   }
 }
 
-Heavy.prototype._resistance = 0.2;
+function Soldier() {
+    Unit.call(this,arguments);
+    this._power = 15;
+}
+
+
+
+var soldier = new Soldier('man');
+
+
+
+console.log(soldier);
+//console.log(soldier.getLevel());
+var soldier2 = new Unit('man');
+
+console.log(soldier2.getLevel());
+
+console.log(soldier2);
